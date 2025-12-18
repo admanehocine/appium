@@ -1,16 +1,20 @@
 class Actions {
     async Click(element) {
         await element.waitForDisplayed({ timeout: 10000 });
+        await element.waitForEnabled({ timeout: 10000 });
 
-        // Click simple avec WebDriver
-        try {
-            await element.click();
-        } catch (err) {
-            console.log("Click normal échoué. Vérifie que l'élément est interactif et visible !");
-        }
+        const location = await element.getLocation();
+        const size = await element.getSize();
 
-        await browser.pause(500);
+        const x = Math.floor(location.x + size.width / 2);
+        const y = Math.floor(location.y + size.height / 2);
+
+        await driver.execute('mobile: shell', {
+            command: 'input',
+            args: ['tap', x.toString(), y.toString()]
+        });
     }
+
 
     async SetValue(element, value) {
         await element.waitForDisplayed({ timeout: 10000 });
